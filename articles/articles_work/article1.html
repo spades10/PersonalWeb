@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>articles</title>
+<meta name="description" content="Thoughts, reviews and ideas since 1999."/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="shortcut icon" href="#">
+<link rel="stylesheet" type="text/css" href="../../assets/css/screen.css"/>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,700,700italic|Playfair+Display:400,700,400italic,700italic"/>
+</head>
+<body class="post-template">
+<div class="site-wrapper">
+	<nav class="main-nav overlay clearfix">
+	<a class="blog-logo" href="index.html"><img src="../../assets/img/logo.png" alt="Fashion Critiques"/></a>
+	<ul id="menu">
+		<li class="nav-home nav-current" role="presentation"><a href="../../index.html">关于生活</a></li>
+		<li class="nav-article-example" role="presentation"><a href="../../index_travel/index.html">关于旅行</a></li>
+		<li class="nav-about-us" role="presentation"><a href="../../index_work/index.html">关于工作</a></li>
+		<li class="nav-author-page" role="presentation"><a href="../../author.html">关于我</a></li>
+		<span class="socialheader">
+		<a href="#"><span class='symbol'>circletwitterbird</span></a>
+		<a href="#"><span class='symbol'>circlefacebook</span></a>
+		<a href="#"><span class='symbol'>circlegoogleplus</span></a>
+		<a href="mailto:wowthemesnet@gmail.com"><span class='symbol'>circleemail</span></a>
+		</span>
+	</ul>
+	</nav>
+	<header class="main-header post-head" style="background-image: url(../../assets/img/posts/1.jpg)">
+	<div class="vertical">
+		<div class="main-header-content inner">
+			<h1 class="post-title">云原生Docker相关记录</h1>
+			<div class="entry-title-divider">
+				<span></span><span></span><span></span>
+			</div>
+			<section class="post-meta">
+			<time class="post-date" datetime="2015-12-13">2022-6-29</time> | <a class="scrolltocomments" href="#disqus_thread">北京</a>
+			</section>
+		</div>
+	</div>
+	</header>
+	<main id="content" class="content" role="main">
+	<div class="wraps">
+		<img src="../../assets/img/shadow.png" class="wrapshadow">
+		<article class="post featured">
+		<section class="post-content">
+		<p>
+			Docker算是继虚拟机之后一个不错的应用容器引擎，可以将宿主机分成多个独立的进程。
+			Docker的核心概念主要是镜像（image）和容器（container）。
+			镜像是模板，是创建容器的基础，类似于虚拟机里面快照的概念。
+			容器是由镜像创建的运行实例，可以启动、停止和删除，容器之间相互隔离。
+		</p>
+		<p>
+			类似于 GitHub，docker 也存在一个dockerhub，网址为 <a href="https://hub.docker.com/" target="https://hub.docker.com/">https://hub.docker.com/</a>。
+			在我们创建完账号后，可以使用 docker pull 的方式从 dockerhub 拉取镜像，也可以使用 docker push 的方式将自己的镜像上传到 dockerhub。
+		</p>
+		<p>
+			当我们拉取到镜像之后，就可以使用镜像生成并启动容器了，先用 docker create 创建容器，然后再使用 docker start 启动容器。
+			一般是执行 docker run 命令， 等同于执行了 docker create 和 docker start 命令。
+			常用的命令格式如下:
+			<pre> docker run --runtime=nvidia -itd --net=host --userns=host --restart=always --shm-size="16g" \
+				-v /data:/data \
+				--name=dockername \
+				nvidia/cuda:11.4.1-cudnn8-devel-ubuntu18.04 \
+				--ssh-port 12345 </pre>
+			可用选项主要有以下几种，
+		</p>
+		<table border="1">
+			<tr>
+				<td>-a</td><td>指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项</td>
+			</tr>
+			<tr>
+				<td>-d</td><td>后台运行容器，并返回容器ID</td>
+			</tr>
+			<tr>
+				<td>-i</td><td>以交互模式运行容器，通常与 -t 同时使用</td>
+			</tr>
+			<tr>
+				<td>-P</td><td>随机端口映射，容器内部端口 <mark><strong>随机</strong></mark> 映射到主机的端口</td>
+			</tr>
+			<tr>
+				<td>-p</td><td>指定端口映射，格式为：<strong>主机(宿主)端口:容器端口</strong></td>
+			</tr>
+			<tr>
+				<td>-t</td><td>为容器重新分配一个伪输入终端，通常与 -i 同时使用</td>
+			</tr>
+			<tr>
+				<td>–name=</td><td>为容器指定一个名称</td>
+			</tr>
+			<tr>
+				<td>–dns 8.8.8.8</td><td>指定容器使用的DNS服务器，默认和宿主一致</td>
+			</tr>
+			<tr>
+				<td>–dns-search example.com</td><td>指定容器DNS搜索域名，默认和宿主一致</td>
+			</tr>
+			<tr>
+				<td>-h</td><td>指定容器的hostname</td>
+			</tr>
+			<tr>
+				<td>-e username=</td><td>设置环境变量</td>
+			</tr>
+			<tr>
+				<td>–env-file=[ ]</td><td>从指定文件读入环境变量</td>
+			</tr>
+			<tr>
+				<td>-m</td><td>设置容器使用内存最大值</td>
+			</tr>
+			<tr>
+				<td>–net=</td><td>指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型</td>
+			</tr>
+			<tr>
+				<td>–link=[ ]</td><td>添加链接到另一个容器</td>
+			</tr>
+			<tr>
+				<td>–expose=[ ]</td><td>开放一个端口或一组端口</td>
+			</tr>
+			<tr>
+				<td>-volume , -v</td><td>绑定一个卷</td>
+			</tr>
+		</table>
+	
+		<p>
+			另外，--runtime=nvidia 的作用是让容器可以访问到外部的nvidia显卡，不过最近使用--gpus也能达到这个目的。
+			--userns=host 的作用是禁用容器的user namespace。
+			--shm-size="16g" 的作用是修改共享内存的大小。
+		</p>
+		</section>
+		<footer class="post-footer">
+		<figure class="author-image">
+		<a class="img" href="author.html" style="background-image: url(../../assets/img/gravatar.jpg"><span class="hidden">David's Picture</span></a>
+		</figure>
+		<section class="author">
+		<h4><a href="/author/ghosty/">Bruce</a></h4>
+		<p>
+			The blog combining journalist David&#x27;s years of experience covering fashion and culture for among others. Read my blog and you will learn how to become a fashion editor
+		</p>
+		<div class="author-meta">
+			<span class="author-location icon-location">China</span>
+			<span class="author-link icon-link"><a href="https://www.wowthemes.net">https://www.wowthemes.net</a></span>
+		</div>
+		</section>
+		<section class="share">
+		<h4>Share this post</h4>
+		<a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Once%20Upon%20a%20Time&amp;url=#" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+		<span class="hidden">Twitter</span>
+		</a>
+		<a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=#" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+		<span class="hidden">Facebook</span>
+		</a>
+		<a class="icon-google-plus" href="https://plus.google.com/share?url=#" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+		<span class="hidden">Google+</span>
+		</a>
+		</section>
+		</footer>
+		<div id="disqus_thread">
+		</div>
+		<script>
+			(function() { // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			s.src = 'https://wowthemesdemo.disqus.com/embed.js';
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+			})();
+			</script>
+		</article>
+	</div>
+	</main>
+	<div class="clearfix">
+	</div>
+	<aside class="read-next">
+	<a class="read-next-story " style="background-image: url(http://s3.amazonaws.com/caymandemo/wp-content/uploads/sites/10/2015/09/10175658/j6-520x779-520x600.jpg)" href="article.html">
+	<section class="post">
+	<h2>The first journey in my life</h2>
+	<p>
+		I had accompanied Ashok on several occasions earlier to the glass shop and watched as he ordered glass explaining&hellip;
+	</p>
+	</section>
+	</a>
+	<a class="read-next-story prev " style="background-image: url(http://s3.amazonaws.com/caymandemo/wp-content/uploads/sites/10/2015/09/10175658/j7-520x780-520x600.jpg)" href="article.html">
+	<section class="post">
+	<h2>Few days at his shop</h2>
+	<p>
+		Ashok’s shop is not very large. It is a two-roomed shop on the ground floor of the Gomes&hellip;
+	</p>
+	</section>
+	</a>
+	</aside>
+	<footer class="site-footer clearfix">
+	<a href="#top" id="back-to-top" class="back-top"></a>
+	<div class="text-center">
+		<a href="index.html">Nectaria Template</a> &copy; 2016<br/>
+		Free HTML Template by <a href="https://wowthemes.net">WowThemes.net</a>
+	</div>
+	</footer>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="../../assets/js/masonry.min.js"></script>
+<script type="text/javascript" src="../../assets/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="../../assets/js/index.js"></script>
+</body>
+</html>
